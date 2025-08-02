@@ -93,6 +93,7 @@ export const translations = {
     gram: 'g',
     
     // Common
+    loading: 'Loading...',
     retry: 'Retry',
     back: 'Back',
     version: 'Version',
@@ -214,6 +215,7 @@ export const translations = {
     gram: 'جرام',
     
     // Common
+    loading: 'جاري التحميل...',
     retry: 'إعادة المحاولة',
     back: 'رجوع',
     version: 'الإصدار',
