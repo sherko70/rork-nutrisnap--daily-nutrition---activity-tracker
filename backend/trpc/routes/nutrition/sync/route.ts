@@ -20,7 +20,7 @@ const nutritionData: Record<string, {
   }>;
 }> = {};
 
-export default publicProcedure
+export const syncProcedure = publicProcedure
   .input(z.object({
     token: z.string(),
     goals: z.object({
@@ -55,7 +55,19 @@ export default publicProcedure
     // Store nutrition data for user
     nutritionData[userId] = {
       goals: input.goals,
-      history: input.history,
+      history: input.history as Record<string, {
+        date: string;
+        totalCalories: number;
+        totalProtein: number;
+        foods: Array<{
+          id: string;
+          name: string;
+          calories: number;
+          protein: number;
+          timestamp: number;
+          quantity?: number;
+        }>;
+      }>,
     };
 
     return { success: true };

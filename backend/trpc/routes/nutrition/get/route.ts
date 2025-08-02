@@ -20,7 +20,7 @@ const nutritionData: Record<string, {
   }>;
 }> = {};
 
-export default publicProcedure
+export const getProcedure = publicProcedure
   .input(z.object({
     token: z.string(),
   }))

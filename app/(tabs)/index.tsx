@@ -15,6 +15,14 @@ export default function DashboardScreen() {
   const { t, isRTL } = useLanguage();
   const [goalsModalVisible, setGoalsModalVisible] = useState(false);
   
+  if (isLoading) {
+    return (
+      <View style={styles.loadingContainer}>
+        <Text style={styles.loadingText}>{t('loading')}</Text>
+      </View>
+    );
+  }
+  
   return (
     <View style={styles.container}>
       <Stack.Screen 
@@ -106,5 +114,15 @@ const styles = StyleSheet.create({
     fontSize: 14,
     color: Colors.textLight,
     textAlign: 'center',
+  },
+  loadingContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: Colors.background,
+  },
+  loadingText: {
+    fontSize: 16,
+    color: Colors.textLight,
   },
 });

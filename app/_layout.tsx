@@ -1,9 +1,9 @@
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { Stack } from "expo-router";
 import * as SplashScreen from "expo-splash-screen";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, Component, ReactNode } from "react";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
-import { View, Text, StyleSheet, Platform } from "react-native";
+import { View, Text, StyleSheet, Platform, TouchableOpacity } from "react-native";
 import mobileAds from 'react-native-google-mobile-ads';
 
 import { AuthProvider, useAuth } from "@/hooks/useAuth";
@@ -51,6 +51,45 @@ function RootLayoutNav() {
   );
 }
 
+interface ErrorBoundaryState {
+  hasError: boolean;
+  error?: Error;
+}
+
+class ErrorBoundary extends Component<{ children: ReactNode }, ErrorBoundaryState> {
+  constructor(props: { children: ReactNode }) {
+    super(props);
+    this.state = { hasError: false };
+  }
+
+  static getDerivedStateFromError(error: Error): ErrorBoundaryState {
+    return { hasError: true, error };
+  }
+
+  componentDidCatch(error: Error, errorInfo: any) {
+    console.error('Error Boundary caught an error:', error, errorInfo);
+  }
+
+  render() {
+    if (this.state.hasError) {
+      return (
+        <View style={styles.errorContainer}>
+          <Text style={styles.errorTitle}>Something went wrong</Text>
+          <Text style={styles.errorText}>The app encountered an unexpected error</Text>
+          <TouchableOpacity 
+            style={styles.retryButton}
+            onPress={() => this.setState({ hasError: false, error: undefined })}
+          >
+            <Text style={styles.retryButtonText}>Try Again</Text>
+          </TouchableOpacity>
+        </View>
+      );
+    }
+
+    return this.props.children;
+  }
+}
+
 function ErrorFallback() {
   return (
     <View style={styles.errorContainer}>
@@ -69,15 +108,23 @@ export default function RootLayout() {
       try {
         // Initialize AdMob (only on mobile platforms)
         if (Platform.OS !== 'web') {
-          await mobileAds().initialize();
-          console.log('AdMob initialized successfully');
+          try {
+            await mobileAds().initialize();
+            console.log('AdMob initialized successfully');
+          } catch (adError) {
+            console.warn('AdMob initialization failed:', adError);
+            // Don't fail the entire app if AdMob fails
+          }
         }
         
         // Pre-load any resources or data here
         await new Promise(resolve => setTimeout(resolve, 100));
       } catch (e) {
         console.warn('Error during app preparation:', e);
-        setError(e as Error);
+        // Only set error for critical failures, not AdMob issues
+        if (e instanceof Error && !e.message.includes('AdMob')) {
+          setError(e as Error);
+        }
       } finally {
         setAppIsReady(true);
       }
@@ -110,19 +157,21 @@ export default function RootLayout() {
   }
 
   return (
-    <LanguageProvider>
-      <trpc.Provider client={trpcClient} queryClient={queryClient}>
-        <QueryClientProvider client={queryClient}>
-          <AuthProvider>
-            <NutriStoreProvider>
-              <GestureHandlerRootView style={{ flex: 1 }}>
-                <RootLayoutNav />
-              </GestureHandlerRootView>
-            </NutriStoreProvider>
-          </AuthProvider>
-        </QueryClientProvider>
-      </trpc.Provider>
-    </LanguageProvider>
+    <ErrorBoundary>
+      <LanguageProvider>
+        <trpc.Provider client={trpcClient} queryClient={queryClient}>
+          <QueryClientProvider client={queryClient}>
+            <AuthProvider>
+              <NutriStoreProvider>
+                <GestureHandlerRootView style={{ flex: 1 }}>
+                  <RootLayoutNav />
+                </GestureHandlerRootView>
+              </NutriStoreProvider>
+            </AuthProvider>
+          </QueryClientProvider>
+        </trpc.Provider>
+      </LanguageProvider>
+    </ErrorBoundary>
   );
 }
 
@@ -154,5 +203,17 @@ const styles = StyleSheet.create({
     fontSize: 16,
     color: Colors.textLight,
     textAlign: 'center',
+    marginBottom: 20,
+  },
+  retryButton: {
+    backgroundColor: Colors.primary,
+    paddingHorizontal: 24,
+    paddingVertical: 12,
+    borderRadius: 8,
+  },
+  retryButtonText: {
+    color: Colors.white,
+    fontSize: 16,
+    fontWeight: '600',
   },
 });

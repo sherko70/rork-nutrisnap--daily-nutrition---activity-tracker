@@ -12,7 +12,7 @@ const users: Array<{
   updatedAt: Date;
 }> = [];
 
-export default publicProcedure
+export const loginProcedure = publicProcedure
   .input(z.object({
     email: z.string().email(),
     password: z.string(),

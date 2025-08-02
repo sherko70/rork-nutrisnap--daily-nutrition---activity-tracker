@@ -12,7 +12,7 @@ const users: Array<{
   updatedAt: Date;
 }> = [];
 
-export default publicProcedure
+export const profileProcedure = publicProcedure
   .input(z.object({
     token: z.string(),
   }))

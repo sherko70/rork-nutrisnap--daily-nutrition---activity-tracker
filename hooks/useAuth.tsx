@@ -27,16 +27,26 @@ const [AuthProvider, useAuth] = createContextHook(() => {
         if (token && userData) {
           try {
             const user = JSON.parse(userData);
-            // Verify token with backend
-            const profile = await trpcClient.auth.profile.query({ token });
-            
-            setAuthState({
-              user: profile,
-              isAuthenticated: true,
-              isLoading: false,
-            });
-          } catch (error) {
-            // Token is invalid, clear storage
+            // Try to verify token with backend, but don't fail if offline
+            try {
+              const profile = await trpcClient.auth.profile.query({ token });
+              setAuthState({
+                user: profile,
+                isAuthenticated: true,
+                isLoading: false,
+              });
+            } catch (backendError) {
+              console.warn('Backend verification failed, using cached user:', backendError);
+              // Use cached user data if backend is unavailable
+              setAuthState({
+                user,
+                isAuthenticated: true,
+                isLoading: false,
+              });
+            }
+          } catch (parseError) {
+            console.warn('Error parsing user data:', parseError);
+            // Clear invalid storage
             await Promise.all([
               AsyncStorage.removeItem(AUTH_TOKEN_KEY),
               AsyncStorage.removeItem(USER_DATA_KEY),

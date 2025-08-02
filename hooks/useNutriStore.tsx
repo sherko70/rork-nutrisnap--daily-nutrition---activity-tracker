@@ -39,13 +39,21 @@ const [NutriStoreProvider, useNutriStore] = createContextHook(() => {
           if (token) {
             try {
               const data = await trpcClient.nutrition.get.query({ token });
-              setGoals({ ...DEFAULT_GOALS, ...data.goals });
-              setHistory(data.history as HistoryData);
               
-              // Set today's foods from history
-              const todayData = data.history[currentDate];
-              if (todayData) {
-                setTodayFoods(todayData.foods);
+              // Safely set goals with validation
+              if (data.goals && typeof data.goals === 'object') {
+                setGoals({ ...DEFAULT_GOALS, ...data.goals });
+              }
+              
+              // Safely set history with validation
+              if (data.history && typeof data.history === 'object') {
+                setHistory(data.history as HistoryData);
+                
+                // Set today's foods from history
+                const todayData = data.history[currentDate];
+                if (todayData && Array.isArray(todayData.foods)) {
+                  setTodayFoods(todayData.foods);
+                }
               }
             } catch (error) {
               console.error('Error loading data from backend:', error);
@@ -123,7 +131,7 @@ const [NutriStoreProvider, useNutriStore] = createContextHook(() => {
           await trpcClient.nutrition.sync.mutate({
             token,
             goals,
-            history: history as Record<string, DailyLog>,
+            history: history,
           });
           setLastSyncTime(Date.now());
         }
