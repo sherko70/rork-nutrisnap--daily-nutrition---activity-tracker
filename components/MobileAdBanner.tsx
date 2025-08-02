@@ -6,16 +6,18 @@ import Colors from '@/constants/colors';
 import { useLanguage } from '@/hooks/useLanguage';
 
 interface MobileAdBannerProps {
-  size?: keyof typeof BannerAdSize;
+  size?: string;
+  onError?: () => void;
+  onLoad?: () => void;
 }
 
-const MobileAdBanner: React.FC<MobileAdBannerProps> = ({ size = 'BANNER' }) => {
+const MobileAdBanner: React.FC<MobileAdBannerProps> = ({ size = 'BANNER', onError, onLoad }) => {
   const { isRTL } = useLanguage();
   const [adError, setAdError] = useState<boolean>(false);
   const [isLoading, setIsLoading] = useState<boolean>(true);
   
   const adUnitId = __DEV__ ? TestIds.BANNER : 'ca-app-pub-8364017641446993/6300978111';
-  const adSize = size ? BannerAdSize[size] : BannerAdSize.BANNER;
+  const adSize = (BannerAdSize as any)[size] || BannerAdSize.BANNER;
   
   useEffect(() => {
     const timer = setTimeout(() => {
@@ -60,11 +62,13 @@ const MobileAdBanner: React.FC<MobileAdBannerProps> = ({ size = 'BANNER' }) => {
           console.log('Ad loaded successfully');
           setAdError(false);
           setIsLoading(false);
+          onLoad?.();
         }}
         onAdFailedToLoad={(error: any) => {
           console.log('Ad failed to load:', error);
           setAdError(true);
           setIsLoading(false);
+          onError?.();
         }}
       />
     </View>

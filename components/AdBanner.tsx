@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from 'react';
-import { Platform, StyleSheet, Text, View } from 'react-native';
+import React from 'react';
+import { StyleSheet, Text, View } from 'react-native';
 
 import Colors from '@/constants/colors';
 import { useLanguage } from '@/hooks/useLanguage';
@@ -10,52 +10,17 @@ interface AdBannerProps {
 
 const AdBanner: React.FC<AdBannerProps> = ({ size = 'BANNER' }) => {
   const { isRTL } = useLanguage();
-  const [MobileAdComponent, setMobileAdComponent] = useState<React.ComponentType<any> | null>(null);
-  const [isLoading, setIsLoading] = useState<boolean>(true);
   
-  useEffect(() => {
-    if (Platform.OS !== 'web') {
-      // Dynamically import the mobile ad component
-      import('./MobileAdBanner')
-        .then((module) => {
-          setMobileAdComponent(() => module.default);
-          setIsLoading(false);
-        })
-        .catch((error) => {
-          console.log('Failed to load mobile ad component:', error);
-          setIsLoading(false);
-        });
-    } else {
-      setIsLoading(false);
-    }
-  }, []);
-  
-  // For web, show placeholder
-  if (Platform.OS === 'web') {
-    return (
-      <View style={styles.webContainer}>
-        <Text style={[styles.webText, isRTL && styles.rtlText]}>
-          📢 Advertisement Space
-        </Text>
-        <Text style={[styles.webSubText, isRTL && styles.rtlText]}>
-          Ads will appear on mobile devices
-        </Text>
-      </View>
-    );
-  }
-  
-  // For mobile, show loading state or the actual ad component
-  if (isLoading || !MobileAdComponent) {
-    return (
-      <View style={styles.container}>
-        <Text style={styles.loadingText}>
-          Loading ad...
-        </Text>
-      </View>
-    );
-  }
-  
-  return <MobileAdComponent size={size} />;
+  return (
+    <View style={styles.webContainer}>
+      <Text style={[styles.webText, isRTL && styles.rtlText]}>
+        📢 Advertisement Space
+      </Text>
+      <Text style={[styles.webSubText, isRTL && styles.rtlText]}>
+        Ads will appear on mobile devices
+      </Text>
+    </View>
+  );
 };
 
 const styles = StyleSheet.create({
