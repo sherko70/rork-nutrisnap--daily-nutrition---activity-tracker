@@ -15,22 +15,14 @@
     },
     "ios": {
       "supportsTablet": true,
-      "bundleIdentifier": "app.rork.nutrisnap-daily-nutrition-activity-tracker",
-      "infoPlist": {
-        "NSCameraUsageDescription": "Allow $(PRODUCT_NAME) to access your camera",
-        "NSMicrophoneUsageDescription": "Allow $(PRODUCT_NAME) to access your microphone"
-      }
+      "bundleIdentifier": "app.rork.nutrisnap-daily-nutrition-activity-tracker"
     },
     "android": {
       "adaptiveIcon": {
         "foregroundImage": "./assets/images/adaptive-icon.png",
         "backgroundColor": "#ffffff"
       },
-      "package": "app.rork.nutrisnap-daily-nutrition-activity-tracker",
-      "permissions": [
-        "CAMERA",
-        "RECORD_AUDIO"
-      ]
+      "package": "app.rork.nutrisnap-daily-nutrition-activity-tracker"
     },
     "web": {
       "favicon": "./assets/images/favicon.png"
@@ -43,11 +35,10 @@
         }
       ],
       [
-        "expo-camera",
+        "react-native-google-mobile-ads",
         {
-          "cameraPermission": "Allow $(PRODUCT_NAME) to access your camera",
-          "microphonePermission": "Allow $(PRODUCT_NAME) to access your microphone",
-          "recordAudioAndroid": true
+          "android_app_id": "ca-app-pub-8364017641446993~9192696758",
+          "ios_app_id": "ca-app-pub-8364017641446993~9192696758"
         }
       ]
     ],

@@ -60,7 +60,7 @@ export default function HistoryScreen() {
         }} 
       />
       
-      <AdBanner onPress={() => console.log('History screen ad clicked!')} />
+      <AdBanner />
       
       <View style={styles.tabsContainer}>
         <Pressable

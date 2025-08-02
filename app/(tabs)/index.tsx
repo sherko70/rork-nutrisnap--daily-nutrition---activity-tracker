@@ -32,7 +32,7 @@ export default function DashboardScreen() {
         }} 
       />
       
-      <AdBanner onPress={() => console.log('Ad clicked!')} />
+      <AdBanner />
       
       <DailyProgress onEditGoals={() => setGoalsModalVisible(true)} />
       

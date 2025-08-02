@@ -66,7 +66,7 @@ export default function FoodScreen() {
         }} 
       />
       
-      <AdBanner onPress={() => console.log('Food screen ad clicked!')} />
+      <AdBanner />
       
       <View style={styles.searchContainer}>
         <View style={[styles.searchHeader, isRTL && styles.rtlSearchHeader]}>

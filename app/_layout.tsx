@@ -3,7 +3,8 @@ import { Stack } from "expo-router";
 import * as SplashScreen from "expo-splash-screen";
 import React, { useEffect, useState } from "react";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
-import { View, Text, StyleSheet } from "react-native";
+import { View, Text, StyleSheet, Platform } from "react-native";
+import mobileAds from 'react-native-google-mobile-ads';
 
 import { AuthProvider, useAuth } from "@/hooks/useAuth";
 import { LanguageProvider } from "@/hooks/useLanguage";
@@ -66,6 +67,12 @@ export default function RootLayout() {
   useEffect(() => {
     async function prepare() {
       try {
+        // Initialize AdMob (only on mobile platforms)
+        if (Platform.OS !== 'web') {
+          await mobileAds().initialize();
+          console.log('AdMob initialized successfully');
+        }
+        
         // Pre-load any resources or data here
         await new Promise(resolve => setTimeout(resolve, 100));
       } catch (e) {
