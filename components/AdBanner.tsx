@@ -1,20 +1,42 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Platform, StyleSheet, Text, View } from 'react-native';
-import { BannerAd, BannerAdSize, TestIds } from 'react-native-google-mobile-ads';
 
 import Colors from '@/constants/colors';
 import { useLanguage } from '@/hooks/useLanguage';
 
+// Dynamic import types for mobile ads
+type BannerAdSize = any;
+type BannerAdComponent = any;
+type TestIds = any;
+
 interface AdBannerProps {
-  size?: BannerAdSize;
+  size?: string;
 }
 
-const AdBanner: React.FC<AdBannerProps> = ({ size = BannerAdSize.BANNER }) => {
+const AdBanner: React.FC<AdBannerProps> = ({ size = 'BANNER' }) => {
   const { isRTL } = useLanguage();
   const [adError, setAdError] = useState<boolean>(false);
+  const [BannerAd, setBannerAd] = useState<BannerAdComponent | null>(null);
+  const [BannerAdSize, setBannerAdSize] = useState<BannerAdSize | null>(null);
+  const [TestIds, setTestIds] = useState<TestIds | null>(null);
   
-  // Use test ad unit ID for development, replace with your real ad unit ID for production
-  const adUnitId = __DEV__ ? TestIds.BANNER : 'ca-app-pub-8364017641446993/6300978111';
+  useEffect(() => {
+    // Only load ads module on mobile platforms
+    if (Platform.OS !== 'web') {
+      const loadAdsModule = async () => {
+        try {
+          const adsModule = await import('react-native-google-mobile-ads');
+          setBannerAd(() => adsModule.BannerAd);
+          setBannerAdSize(adsModule.BannerAdSize);
+          setTestIds(adsModule.TestIds);
+        } catch (error) {
+          console.log('Failed to load ads module:', error);
+          setAdError(true);
+        }
+      };
+      loadAdsModule();
+    }
+  }, []);
   
   // For web, show placeholder
   if (Platform.OS === 'web') {
@@ -30,6 +52,17 @@ const AdBanner: React.FC<AdBannerProps> = ({ size = BannerAdSize.BANNER }) => {
     );
   }
   
+  // Show loading state while ads module is loading
+  if (!BannerAd || !BannerAdSize || !TestIds) {
+    return (
+      <View style={styles.loadingContainer}>
+        <Text style={[styles.loadingText, isRTL && styles.rtlText]}>
+          Loading ad...
+        </Text>
+      </View>
+    );
+  }
+  
   if (adError) {
     return (
       <View style={styles.errorContainer}>
@@ -40,11 +73,15 @@ const AdBanner: React.FC<AdBannerProps> = ({ size = BannerAdSize.BANNER }) => {
     );
   }
   
+  // Use test ad unit ID for development, replace with your real ad unit ID for production
+  const adUnitId = __DEV__ ? TestIds.BANNER : 'ca-app-pub-8364017641446993/6300978111';
+  const adSize = BannerAdSize[size] || BannerAdSize.BANNER;
+  
   return (
     <View style={styles.container}>
       <BannerAd
         unitId={adUnitId}
-        size={size}
+        size={adSize}
         requestOptions={{
           requestNonPersonalizedAdsOnly: false,
         }}
@@ -52,7 +89,7 @@ const AdBanner: React.FC<AdBannerProps> = ({ size = BannerAdSize.BANNER }) => {
           console.log('Ad loaded successfully');
           setAdError(false);
         }}
-        onAdFailedToLoad={(error) => {
+        onAdFailedToLoad={(error: any) => {
           console.log('Ad failed to load:', error);
           setAdError(true);
         }}
@@ -89,6 +126,20 @@ const styles = StyleSheet.create({
     marginBottom: 2,
   },
   webSubText: {
+    fontSize: 12,
+    color: Colors.textLight,
+  },
+  loadingContainer: {
+    backgroundColor: Colors.primaryLight,
+    borderRadius: 8,
+    marginHorizontal: 16,
+    marginVertical: 8,
+    padding: 12,
+    alignItems: 'center',
+    justifyContent: 'center',
+    minHeight: 50,
+  },
+  loadingText: {
     fontSize: 12,
     color: Colors.textLight,
   },

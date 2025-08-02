@@ -18,7 +18,7 @@ export default function DashboardScreen() {
   if (isLoading) {
     return (
       <View style={styles.loadingContainer}>
-        <Text style={styles.loadingText}>{t('loading')}</Text>
+        <Text style={styles.loadingText}>{t('loading' as any)}</Text>
       </View>
     );
   }
