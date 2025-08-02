@@ -4,7 +4,7 @@ import * as SplashScreen from "expo-splash-screen";
 import React, { useEffect, useState, Component, ReactNode } from "react";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import { View, Text, StyleSheet, Platform, TouchableOpacity } from "react-native";
-import mobileAds from 'react-native-google-mobile-ads';
+
 
 import { AuthProvider, useAuth } from "@/hooks/useAuth";
 import { LanguageProvider } from "@/hooks/useLanguage";
@@ -109,6 +109,7 @@ export default function RootLayout() {
         // Initialize AdMob (only on mobile platforms)
         if (Platform.OS !== 'web') {
           try {
+            const { default: mobileAds } = await import('react-native-google-mobile-ads');
             await mobileAds().initialize();
             console.log('AdMob initialized successfully');
           } catch (adError) {
