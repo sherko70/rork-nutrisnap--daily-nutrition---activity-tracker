@@ -6,7 +6,7 @@ import Colors from '@/constants/colors';
 import { useLanguage } from '@/hooks/useLanguage';
 
 interface MobileAdBannerProps {
-  size?: string;
+  size?: keyof typeof BannerAdSize;
 }
 
 const MobileAdBanner: React.FC<MobileAdBannerProps> = ({ size = 'BANNER' }) => {
@@ -15,7 +15,7 @@ const MobileAdBanner: React.FC<MobileAdBannerProps> = ({ size = 'BANNER' }) => {
   const [isLoading, setIsLoading] = useState<boolean>(true);
   
   const adUnitId = __DEV__ ? TestIds.BANNER : 'ca-app-pub-8364017641446993/6300978111';
-  const adSize = BannerAdSize[size] || BannerAdSize.BANNER;
+  const adSize = size ? BannerAdSize[size] : BannerAdSize.BANNER;
   
   useEffect(() => {
     const timer = setTimeout(() => {
