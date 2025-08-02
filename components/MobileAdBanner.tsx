@@ -7,11 +7,9 @@ import { useLanguage } from '@/hooks/useLanguage';
 
 interface MobileAdBannerProps {
   size?: string;
-  onError?: () => void;
-  onLoad?: () => void;
 }
 
-const MobileAdBanner: React.FC<MobileAdBannerProps> = ({ size = 'BANNER', onError, onLoad }) => {
+const MobileAdBanner: React.FC<MobileAdBannerProps> = ({ size = 'BANNER' }) => {
   const { isRTL } = useLanguage();
   const [adError, setAdError] = useState<boolean>(false);
   const [isLoading, setIsLoading] = useState<boolean>(true);
@@ -19,24 +17,25 @@ const MobileAdBanner: React.FC<MobileAdBannerProps> = ({ size = 'BANNER', onErro
   const adUnitId = __DEV__ ? TestIds.BANNER : 'ca-app-pub-8364017641446993/6300978111';
   
   // Map size string to BannerAdSize enum
-  const getBannerSize = (sizeString: string) => {
+  const getBannerSize = (sizeString: string): keyof typeof BannerAdSize => {
     switch (sizeString) {
       case 'BANNER':
-        return BannerAdSize.BANNER;
+        return 'BANNER';
       case 'LARGE_BANNER':
-        return BannerAdSize.LARGE_BANNER;
+        return 'LARGE_BANNER';
       case 'MEDIUM_RECTANGLE':
-        return BannerAdSize.MEDIUM_RECTANGLE;
+        return 'MEDIUM_RECTANGLE';
       case 'FULL_BANNER':
-        return BannerAdSize.FULL_BANNER;
+        return 'FULL_BANNER';
       case 'LEADERBOARD':
-        return BannerAdSize.LEADERBOARD;
+        return 'LEADERBOARD';
       default:
-        return BannerAdSize.BANNER;
+        return 'BANNER';
     }
   };
   
-  const adSize = getBannerSize(size);
+  const adSizeKey = getBannerSize(size);
+  const adSize = BannerAdSize[adSizeKey];
   
   useEffect(() => {
     const timer = setTimeout(() => {
@@ -81,13 +80,11 @@ const MobileAdBanner: React.FC<MobileAdBannerProps> = ({ size = 'BANNER', onErro
           console.log('Ad loaded successfully');
           setAdError(false);
           setIsLoading(false);
-          onLoad?.();
         }}
         onAdFailedToLoad={(error: any) => {
           console.log('Ad failed to load:', error);
           setAdError(true);
           setIsLoading(false);
-          onError?.();
         }}
       />
     </View>

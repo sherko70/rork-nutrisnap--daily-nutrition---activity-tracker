@@ -8,6 +8,7 @@ interface AdBannerProps {
   size?: string;
 }
 
+// Web version - shows placeholder
 const AdBanner: React.FC<AdBannerProps> = ({ size = 'BANNER' }) => {
   const { isRTL } = useLanguage();
   
@@ -24,12 +25,6 @@ const AdBanner: React.FC<AdBannerProps> = ({ size = 'BANNER' }) => {
 };
 
 const styles = StyleSheet.create({
-  container: {
-    alignItems: 'center',
-    justifyContent: 'center',
-    marginVertical: 8,
-    marginHorizontal: 16,
-  },
   webContainer: {
     backgroundColor: Colors.primaryLight,
     borderRadius: 8,
@@ -53,12 +48,6 @@ const styles = StyleSheet.create({
   webSubText: {
     fontSize: 12,
     color: Colors.textLight,
-  },
-  loadingText: {
-    fontSize: 12,
-    color: Colors.textLight,
-    textAlign: 'center',
-    padding: 12,
   },
   rtlText: {
     textAlign: 'center',
