@@ -17,7 +17,26 @@ const MobileAdBanner: React.FC<MobileAdBannerProps> = ({ size = 'BANNER', onErro
   const [isLoading, setIsLoading] = useState<boolean>(true);
   
   const adUnitId = __DEV__ ? TestIds.BANNER : 'ca-app-pub-8364017641446993/6300978111';
-  const adSize = (BannerAdSize as any)[size] || BannerAdSize.BANNER;
+  
+  // Map size string to BannerAdSize enum
+  const getBannerSize = (sizeString: string) => {
+    switch (sizeString) {
+      case 'BANNER':
+        return BannerAdSize.BANNER;
+      case 'LARGE_BANNER':
+        return BannerAdSize.LARGE_BANNER;
+      case 'MEDIUM_RECTANGLE':
+        return BannerAdSize.MEDIUM_RECTANGLE;
+      case 'FULL_BANNER':
+        return BannerAdSize.FULL_BANNER;
+      case 'LEADERBOARD':
+        return BannerAdSize.LEADERBOARD;
+      default:
+        return BannerAdSize.BANNER;
+    }
+  };
+  
+  const adSize = getBannerSize(size);
   
   useEffect(() => {
     const timer = setTimeout(() => {
