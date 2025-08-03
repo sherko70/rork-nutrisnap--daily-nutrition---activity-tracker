@@ -6,7 +6,7 @@ import Colors from '@/constants/colors';
 import { useLanguage } from '@/hooks/useLanguage';
 import { useNutriStore } from '@/hooks/useNutriStore';
 import { FoodItem as FoodItemType } from '@/types';
-import { getCurrentDate } from '@/utils/dateUtils';
+
 
 interface FoodItemProps {
   item: FoodItemType;

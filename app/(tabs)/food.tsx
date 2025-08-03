@@ -143,7 +143,7 @@ export default function FoodScreen() {
               {!onlineLoading && !onlineError && onlineResults.length === 0 && onlineHasSearched && (
                 <View style={styles.emptySearch}>
                   <Text style={[styles.emptySearchText, isRTL && styles.rtlText]}>
-                    {t('emptySearchText')} "{onlineSearchQuery}"
+                    {t('emptySearchText')} &quot;{onlineSearchQuery}&quot;
                   </Text>
                 </View>
               )}
@@ -163,7 +163,7 @@ export default function FoodScreen() {
               {localResults.length === 0 ? (
                 <View style={styles.emptySearch}>
                   <Text style={[styles.emptySearchText, isRTL && styles.rtlText]}>
-                    {t('emptySearchText')} "{localSearchQuery}"
+                    {t('emptySearchText')} &quot;{localSearchQuery}&quot;
                   </Text>
                 </View>
               ) : (

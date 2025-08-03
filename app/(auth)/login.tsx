@@ -92,7 +92,7 @@ export default function LoginScreen() {
 
         <View style={[styles.signupContainer, isRTL && styles.rtlSignupContainer]}>
           <Text style={[styles.signupText, isRTL && styles.rtlText]}>
-            Don't have an account?{' '}
+            Don&apos;t have an account?{' '}
           </Text>
           <Link href="/(auth)/signup" asChild>
             <Pressable>
