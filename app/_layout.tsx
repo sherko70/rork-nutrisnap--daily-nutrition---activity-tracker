@@ -3,7 +3,7 @@ import { Stack } from "expo-router";
 import * as SplashScreen from "expo-splash-screen";
 import React, { useEffect, useState, Component, ReactNode } from "react";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
-import { View, Text, StyleSheet, Platform, TouchableOpacity } from "react-native";
+import { View, Text, StyleSheet, TouchableOpacity } from "react-native";
 
 
 import { AuthProvider, useAuth } from "@/hooks/useAuth";
@@ -106,26 +106,11 @@ export default function RootLayout() {
   useEffect(() => {
     async function prepare() {
       try {
-        // Initialize AdMob (only on mobile platforms)
-        if (Platform.OS !== 'web') {
-          try {
-            const { default: mobileAds } = await import('react-native-google-mobile-ads');
-            await mobileAds().initialize();
-            console.log('AdMob initialized successfully');
-          } catch (adError) {
-            console.warn('AdMob initialization failed:', adError);
-            // Don't fail the entire app if AdMob fails
-          }
-        }
-        
         // Pre-load any resources or data here
         await new Promise(resolve => setTimeout(resolve, 100));
       } catch (e) {
         console.warn('Error during app preparation:', e);
-        // Only set error for critical failures, not AdMob issues
-        if (e instanceof Error && !e.message.includes('AdMob')) {
-          setError(e as Error);
-        }
+        setError(e as Error);
       } finally {
         setAppIsReady(true);
       }
