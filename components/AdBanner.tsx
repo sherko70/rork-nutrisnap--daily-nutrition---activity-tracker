@@ -4,6 +4,22 @@ import { StyleSheet, Text, View, Platform } from 'react-native';
 import Colors from '@/constants/colors';
 import { useLanguage } from '@/hooks/useLanguage';
 
+// Conditionally import Google Mobile Ads only on native platforms
+let BannerAd: any = null;
+let BannerAdSize: any = null;
+let TestIds: any = null;
+
+if (Platform.OS !== 'web') {
+  try {
+    const GoogleMobileAds = require('react-native-google-mobile-ads');
+    BannerAd = GoogleMobileAds.BannerAd;
+    BannerAdSize = GoogleMobileAds.BannerAdSize;
+    TestIds = GoogleMobileAds.TestIds;
+  } catch (error) {
+    console.log('Google Mobile Ads not available:', error);
+  }
+}
+
 interface AdBannerProps {
   size?: string;
 }
@@ -30,8 +46,29 @@ const AdBanner: React.FC<AdBannerProps> = ({ size = 'BANNER' }) => {
     return <WebAdPlaceholder isRTL={isRTL} />;
   }
   
-  // On native platforms, show a simple placeholder for now
-  // This avoids any import issues with Google Mobile Ads
+  // On native platforms, try to show real ads if available
+  if (BannerAd && BannerAdSize && TestIds) {
+    const adUnitId = __DEV__ 
+      ? TestIds.BANNER 
+      : Platform.select({
+          ios: 'ca-app-pub-8364017641446993/1234567890', // Replace with your real iOS ad unit ID
+          android: 'ca-app-pub-8364017641446993/1234567890', // Replace with your real Android ad unit ID
+        });
+
+    return (
+      <View style={styles.container}>
+        <BannerAd
+          unitId={adUnitId}
+          size={BannerAdSize[size] || BannerAdSize.BANNER}
+          requestOptions={{
+            requestNonPersonalizedAdsOnly: true,
+          }}
+        />
+      </View>
+    );
+  }
+  
+  // Fallback for native platforms when ads are not available
   return (
     <View style={styles.nativeContainer}>
       <Text style={[styles.nativeText, isRTL && styles.rtlText]}>
