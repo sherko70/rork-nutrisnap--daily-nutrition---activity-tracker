@@ -8,22 +8,20 @@ interface AdBannerProps {
   size?: string;
 }
 
-// Native implementation with proper type safety
+// Web implementation with proper type safety
 const AdBanner: React.FC<AdBannerProps> = ({ size = 'BANNER' }) => {
   const { isRTL } = useLanguage();
   
   // Ensure size is always a string to avoid TypeScript errors
   const adSize: string = size || 'BANNER';
   
-  // For now, show placeholder to avoid any bundling issues
-  // This can be updated later to use actual Google Mobile Ads
   return (
     <View style={styles.container}>
       <Text style={[styles.text, isRTL && styles.rtlText]}>
         📢 Advertisement Space ({adSize})
       </Text>
       <Text style={[styles.subText, isRTL && styles.rtlText]}>
-        Ads will be enabled in production
+        Ads will appear on mobile devices
       </Text>
     </View>
   );
@@ -38,7 +36,7 @@ const styles = StyleSheet.create({
     overflow: 'hidden',
     borderWidth: 1,
     borderColor: Colors.primary,
-    borderStyle: 'solid',
+    borderStyle: 'dashed',
     padding: 12,
     alignItems: 'center',
     justifyContent: 'center',

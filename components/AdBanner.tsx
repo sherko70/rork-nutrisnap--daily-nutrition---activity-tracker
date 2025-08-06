@@ -8,11 +8,10 @@ interface AdBannerProps {
   size?: string;
 }
 
+// Fallback AdBanner component - platform-specific versions should be used
 const AdBanner: React.FC<AdBannerProps> = ({ size = 'BANNER' }) => {
   const { isRTL } = useLanguage();
   
-  // Always show placeholder on all platforms for now
-  // This avoids any bundling issues with react-native-google-mobile-ads
   return (
     <View style={styles.container}>
       <Text style={[styles.text, isRTL && styles.rtlText]}>
