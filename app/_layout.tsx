@@ -3,7 +3,7 @@ import { Stack } from "expo-router";
 import * as SplashScreen from "expo-splash-screen";
 import React, { useEffect, useState, Component, ReactNode } from "react";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
-import { View, Text, StyleSheet, TouchableOpacity } from "react-native";
+import { View, Text, StyleSheet, TouchableOpacity, Platform } from "react-native";
 
 
 import { AuthProvider, useAuth } from "@/hooks/useAuth";
@@ -106,8 +106,17 @@ export default function RootLayout() {
   useEffect(() => {
     async function prepare() {
       try {
-        // Google Mobile Ads initialization temporarily disabled
-        // to avoid web bundling issues
+        // Initialize Google Mobile Ads on native platforms only
+        if (Platform.OS !== 'web') {
+          try {
+            const { mobileAds } = await import('react-native-google-mobile-ads');
+            await mobileAds().initialize();
+            console.log('Google Mobile Ads initialized successfully');
+          } catch (adError) {
+            console.warn('Failed to initialize Google Mobile Ads:', adError);
+          }
+        }
+        
         console.log('App initialization complete');
         
         // Pre-load any resources or data here

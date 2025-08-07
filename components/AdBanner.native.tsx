@@ -1,35 +1,65 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { StyleSheet, Text, View } from 'react-native';
+import { BannerAd, BannerAdSize, TestIds } from 'react-native-google-mobile-ads';
 
 import Colors from '@/constants/colors';
 import { useLanguage } from '@/hooks/useLanguage';
 
 interface AdBannerProps {
-  size?: string;
+  size?: keyof typeof BannerAdSize;
 }
 
-// Native implementation with proper type safety
+// Native implementation with Google Mobile Ads
 const AdBanner: React.FC<AdBannerProps> = ({ size = 'BANNER' }) => {
   const { isRTL } = useLanguage();
+  const [adError, setAdError] = useState<boolean>(false);
   
-  // Ensure size is always a string to avoid TypeScript errors
-  const adSize: string = size || 'BANNER';
+  // Use test ad unit ID for development, replace with your actual ad unit ID for production
+  const adUnitId = __DEV__ ? TestIds.BANNER : 'ca-app-pub-8364017641446993/6300978111';
   
-  // For now, show placeholder to avoid any bundling issues
-  // This can be updated later to use actual Google Mobile Ads
+  // Get the banner size from the BannerAdSize enum
+  const bannerSize = BannerAdSize[size] || BannerAdSize.BANNER;
+  
+  if (adError) {
+    // Fallback UI when ad fails to load
+    return (
+      <View style={styles.container}>
+        <Text style={[styles.text, isRTL && styles.rtlText]}>
+          📢 Advertisement Space
+        </Text>
+        <Text style={[styles.subText, isRTL && styles.rtlText]}>
+          Ad failed to load
+        </Text>
+      </View>
+    );
+  }
+  
   return (
-    <View style={styles.container}>
-      <Text style={[styles.text, isRTL && styles.rtlText]}>
-        📢 Advertisement Space ({adSize})
-      </Text>
-      <Text style={[styles.subText, isRTL && styles.rtlText]}>
-        Ads will be enabled in production
-      </Text>
+    <View style={styles.adContainer}>
+      <BannerAd
+        unitId={adUnitId}
+        size={bannerSize}
+        requestOptions={{
+          requestNonPersonalizedAdsOnly: false,
+        }}
+        onAdLoaded={() => {
+          console.log('Banner ad loaded successfully');
+        }}
+        onAdFailedToLoad={(error) => {
+          console.log('Banner ad failed to load:', error);
+          setAdError(true);
+        }}
+      />
     </View>
   );
 };
 
 const styles = StyleSheet.create({
+  adContainer: {
+    alignItems: 'center',
+    marginHorizontal: 16,
+    marginVertical: 8,
+  },
   container: {
     backgroundColor: Colors.primaryLight,
     borderRadius: 8,
