@@ -5,17 +5,23 @@
       "developmentClient": true,
       "distribution": "internal",
       "android": { "buildType": "apk" },
-      "env": { "NPM_CONFIG_LEGACY_PEER_DEPS": "true" }
+      "env": { "NPM_CONFIG_LEGACY_PEER_DEPS": "true" },
+      "node": "18.20.3",
+      "packageManager": "npm"
     },
     "preview": {
       "distribution": "internal",
       "android": { "buildType": "apk" },
-      "env": { "NPM_CONFIG_LEGACY_PEER_DEPS": "true" }
+      "env": { "NPM_CONFIG_LEGACY_PEER_DEPS": "true" },
+      "node": "18.20.3",
+      "packageManager": "npm"
     },
     "production": {
       "autoIncrement": true,
       "android": { "buildType": "app-bundle" },
-      "env": { "NPM_CONFIG_LEGACY_PEER_DEPS": "true" }
+      "env": { "NPM_CONFIG_LEGACY_PEER_DEPS": "true" },
+      "node": "18.20.3",
+      "packageManager": "npm"
     }
   },
   "submit": { "production": {} }
