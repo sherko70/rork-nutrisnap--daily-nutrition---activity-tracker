@@ -2,11 +2,19 @@
   "name": "expo-app",
   "main": "expo-router/entry",
   "version": "1.0.0",
+  "private": true,
+
   "scripts": {
     "start": "bunx rork start -p 66ffk2cbkzb3zko5rlrig --tunnel",
     "start-web": "bunx rork start -p 66ffk2cbkzb3zko5rlrig --web --tunnel",
-    "start-web-dev": "DEBUG=expo* bunx rork start -p 66ffk2cbkzb3zko5rlrig --web --tunnel"
+    "start-web-dev": "DEBUG=expo* bunx rork start -p 66ffk2cbkzb3zko5rlrig --web --tunnel",
+
+    // Helpful shortcuts (optional)
+    "android-devbuild": "eas build -p android --profile development",
+    "android-preview": "eas build -p android --profile preview",
+    "android-prod": "eas build -p android --profile production"
   },
+
   "dependencies": {
     "@expo/vector-icons": "^14.1.0",
     "@hono/trpc-server": "^0.4.0",
@@ -51,11 +59,11 @@
     "zod": "^4.0.5",
     "zustand": "^5.0.2"
   },
+
   "devDependencies": {
     "@babel/core": "^7.25.2",
     "@expo/ngrok": "^4.1.0",
     "@types/react": "~19.0.10",
     "typescript": "~5.8.3"
-  },
-  "private": true
+  }
 }
